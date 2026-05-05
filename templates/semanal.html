@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista semanal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f6fa;
+            padding: 30px;
+        }
+
+        .contenedor {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+            overflow-x: auto;
+        }
+
+        h1, h2 {
+            color: #1f3b57;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            min-width: 900px;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #d6d6d6;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #1f3b57;
+            color: white;
+            vertical-align: top;
+        }
+
+        td.nombre {
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .charla {
+            font-size: 12px;
+            font-weight: normal;
+            display: block;
+            margin-top: 5px;
+            color: #e8eef5;
+        }
+
+        input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+        }
+
+        button {
+            margin-top: 25px;
+            padding: 14px 28px;
+            background: #1f3b57;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #14283d;
+        }
+
+        .volver {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: #1f3b57;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .nota {
+            background: #fff3cd;
+            color: #856404;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <a class="volver" href="/">← Volver</a>
+
+        <h1>Lista semanal de asistencia</h1>
+        <h2>Semana {{ semana_ingresada }} | Área: {{ area }}</h2>
+
+        <div class="nota">
+            Marca con visto las personas que asistieron. Las casillas sin marcar se guardarán como ✗.
+        </div>
+
+        <form method="POST" action="/guardar-semanal">
+            <input type="hidden" name="semana" value="{{ semana_ingresada }}">
+            <input type="hidden" name="area" value="{{ area }}">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cédula</th>
+                        <th>Nombre</th>
+
+                        {% for charla in charlas %}
+                            <th>
+                                {{ charla.dia }}<br>
+                                {{ charla.fecha }}
+                                <span class="charla">{{ charla.charla }}</span>
+                            </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for persona in personal %}
+                        <tr>
+                            <td>{{ persona.cedula }}</td>
+                            <td class="nombre">{{ persona.nombre }}</td>
+
+                            {% for charla in charlas %}
+                                <td>
+                                    <input
+                                        type="checkbox"
+                                        name="asistencia__{{ persona.cedula }}__{{ charla.fecha }}"
+                                        
+                                    >
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <button type="submit">Guardar asistencia semanal</button>
+        </form>
+    </div>
+</body>
+</html>

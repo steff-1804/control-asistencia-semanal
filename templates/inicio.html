@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Control semanal de asistencia</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f6fa;
+            padding: 40px;
+        }
+
+        .contenedor {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1f3b57;
+            font-size: 36px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 18px;
+            font-size: 22px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 20px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 16px;
+            background: #1f3b57;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #14283d;
+        }
+
+        .mensaje {
+            margin-top: 20px;
+            padding: 14px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .exito {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .ayuda {
+            font-size: 17px;
+            color: #555;
+            margin-top: 10px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <h1>Control semanal de asistencia</h1>
+
+        <form method="POST" action="/semanal">
+            <label for="semana">Semana</label>
+            <input
+                type="number"
+                id="semana"
+                name="semana"
+                placeholder="Ejemplo: 1"
+                min="1"
+                required
+            >
+
+            <p class="ayuda">
+                Ingresa solo el número de semana.<br>
+                Ejemplo: <strong>1</strong> para <strong>Semana 1</strong>.
+            </p>
+
+            <label for="area">Área</label>
+            <select id="area" name="area" required>
+                <option value="">Seleccione un área</option>
+                <option value="TECNICO">TECNICO</option>
+                <option value="CALIDAD">CALIDAD</option>
+            </select>
+
+            <button type="submit">Cargar lista semanal</button>
+        </form>
+
+        {% if mensaje %}
+            <div class="mensaje {{ tipo }}">
+                {{ mensaje }}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
