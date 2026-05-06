@@ -129,10 +129,13 @@
                             <td class="nombre">{{ persona.nombre }}</td>
 
                             {% for charla in charlas %}
+                                {% set clave_asistencia = persona.cedula ~ "__" ~ charla.fecha %}
+
                                 <td>
                                     <input
                                         type="checkbox"
                                         name="asistencia__{{ persona.cedula }}__{{ charla.fecha }}"
+                                        {% if asistencia_guardada.get(clave_asistencia) == "✓" %}checked{% endif %}
                                     >
                                 </td>
                             {% endfor %}
