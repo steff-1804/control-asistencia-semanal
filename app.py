@@ -282,6 +282,46 @@ def eliminar_asistencia_previa(semana, area):
     airtable_delete_records(TABLA_ASISTENCIA, ids_a_eliminar)
 
 
+def obtener_asistencia_guardada(semana, area):
+    """
+    Lee la tabla Asistencia de Airtable para saber qué checkboxes
+    deben aparecer marcados cuando se vuelve a cargar la página.
+
+    Llave del diccionario:
+    cedula__fecha
+
+    Valor:
+    ✓ o ✗
+    """
+
+    registros = airtable_get_records(TABLA_ASISTENCIA)
+
+    asistencia_guardada = {}
+
+    for registro in registros:
+        campos = registro.get("fields", {})
+
+        semana_reg = str(campos.get("Semana", "")).strip()
+        area_reg = str(campos.get("Area", "")).strip()
+        cedula = str(campos.get("Cedula", "")).strip()
+        fecha = str(campos.get("Fecha", "")).strip()
+        asistencia = str(campos.get("Asistencia", "")).strip()
+
+        if normalizar_texto(semana_reg) != normalizar_texto(semana):
+            continue
+
+        if normalizar_texto(area_reg) != normalizar_texto(area):
+            continue
+
+        if not cedula or not fecha:
+            continue
+
+        clave = f"{cedula}__{fecha}"
+        asistencia_guardada[clave] = asistencia
+
+    return asistencia_guardada
+
+
 @app.route("/", methods=["GET"])
 def inicio():
     return render_template("inicio.html")
@@ -311,6 +351,7 @@ def semanal():
         try:
             personal = obtener_personal_por_area(area)
             charlas = obtener_charlas_por_semana_area(semana, area)
+            asistencia_guardada = obtener_asistencia_guardada(semana, area)
         except Exception as e:
             mensaje = f"Error al cargar datos desde Airtable: {e}"
             tipo = "error"
@@ -332,7 +373,8 @@ def semanal():
             semana_ingresada=semana_ingresada,
             area=area,
             personal=personal,
-            charlas=charlas
+            charlas=charlas,
+            asistencia_guardada=asistencia_guardada
         )
 
     return redirect(url_for("inicio"))
